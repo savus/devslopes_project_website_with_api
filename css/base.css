@@ -1,0 +1,60 @@
+:root {
+   --siz-5:0.313rem;
+   --size-8:0.5rem;
+   --size-12:0.75rem;
+   --size-16:1rem;
+   --size-20:1.25rem;
+   --size-34:2.125rem;
+}
+
+section,
+footer,
+header,
+main,
+nav {
+   display:block;
+}
+
+*, *::before, *::after {
+   box-sizing:border-box;
+}
+
+body {
+   margin:0;
+   font-family: sans-serif;
+   font-size:1rem;
+   font-weight:400;
+   line-height:1.5;
+   text-align:left;
+}
+
+a {
+   color:#000;
+   text-decoration:none;
+   background-color:transparent;
+}
+
+h1,
+h2,
+h3,
+h4 {
+   margin-top:0.25rem;
+   margin-bottom:0.5rem;
+}
+
+button { outline:none }
+
+.container {
+   width:100%;
+   padding-left:var(--size-16);
+   padding-right:var(--size-16);
+   margin-left:auto;
+   margin-right:auto;
+}
+
+.ul-defaults-none {
+   list-style:none;
+   margin:0;
+   padding:0;
+}
+
