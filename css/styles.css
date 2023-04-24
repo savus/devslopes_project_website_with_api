@@ -1,0 +1,17 @@
+
+.site-wrapper {
+   max-width:600px;
+}
+
+.site-header {
+   text-align:center;
+   padding: var(--size-12);
+}
+
+.info-carousel {
+   margin-top:var(--size-20);
+   padding:var(--size-20);
+   border: 1px solid rgba(0,0,0,0.1);
+   border-radius: var(--size-8);
+   box-shadow: 0px 12px 7px -1px rgba(0,0,0,0.4);
+}
