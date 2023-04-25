@@ -37,20 +37,33 @@
          </header>
 
          <section class="info-section">
-            <div class="info-carousel">
+            <div class="container search-container">
+               <label for="search">
+                  <input autocomplete="off" type="text" id="search" class="info-search" placeholder="Type in pokemon name...">
+                  <i class="fas fa-search"></i>
+               </label>
+               <ul class="info-filter-nav ul-defaults-none">
+                  <li class="filter-link active">List Mode</li>
+                  <li class="filter-link">Card Mode</li>
+                  <li class="filter-link">Sort [A-Z]</li>
+                  <li class="filter-link">Sort [Z-A]</li>
+               </ul>
+            </div>
+            <div class="info-card-container container">
 
-               <div class="info-card">
-                  <header class="card-header">
-                     <h4 class="card-name">
-                        Charizard
-                     </h4>
-                  </header>
-                  <div class="card-body">
-                     <div>stat 1</div>
-                     <div>stat 2</div>
-                     <div>stat 3</div>
+               <div class="info-card-grid">
+                  <div class="info-card">
+                    <div class="card-body">
+                     <div class="card-title">Charizard</div>
+                    </div>
+                     <div class="card-body">
+                        <div>stat 1</div>
+                        <div>stat 2</div>
+                        <div>stat 3</div>
+                     </div>
                   </div>
                </div>
+
                <div class="slide-ctrl-container">
                   <button class="btn">
                      <i class="fa-solid fa-arrow-left"></i>
