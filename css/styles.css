@@ -50,12 +50,6 @@
    display:flex;
    padding:1rem 0;
    flex-wrap:wrap;
-   justify-content:space-between;
-}
-
-.info-filter-nav .filter-link {
-   line-height:1.6;
-   padding:0 1rem;
 }
 
 .info-filter-nav .filter-link:hover {
@@ -72,6 +66,7 @@
    font-weight:700;
    letter-spacing:1.63px;
    padding:0.5rem;
+   line-height:1.6;
 }
 
 .info-card-grid {
