@@ -21,10 +21,10 @@
 }
 
 .search-container label {
-   position:relative;
-   display:inline-flex;
-   align-items:center;
-   width:40%;
+  display: flex;
+  flex-direction:column;
+  align-items:center;
+  margin-bottom:1rem;
 }
 
 .search-container input {
@@ -32,7 +32,7 @@
    background-color:#f1f3f5;
    border:1px solid #f1f3f5;
    border-radius:50rem;
-   width:100%;
+   width:40%;
    display:block;
 }
 
@@ -49,8 +49,9 @@
 
 .info-filter-nav {
    display:flex;
-   padding:1rem 0;
+   padding:0.3rem 0;
    flex-wrap:wrap;
+   justify-content:space-between;
 }
 
 .info-filter-nav .filter-link:hover {
@@ -68,6 +69,27 @@
    letter-spacing:1.63px;
    padding:0.5rem;
    line-height:1.6;
+}
+
+.toggle-carousel-container {
+   max-width:200px;
+   text-align:center;
+   margin:0 auto;
+}
+
+.toggle-carousel {
+   outline:none;
+   margin:0.5rem 0;
+   display:block;
+   background-color:red;
+   border-radius:10px;
+   letter-spacing:165;
+   font-size:0.825rem;
+   text-transform:uppercase;
+   padding:1rem 0.1rem;
+   border:3px solid rgba(0,0,0,1);
+   cursor:pointer;
+   margin: 0 auto;
 }
 
 .info-card-grid {
@@ -164,6 +186,7 @@
 
 .info-card-grid.carousel-mode {
    height:495px;
+   margin: 1rem 0 5rem;
 }
 
 .info-card-grid.carousel-mode .card-title {

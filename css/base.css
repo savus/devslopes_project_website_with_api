@@ -71,8 +71,8 @@ button { outline:none }
    display:inline-flex;
    justify-content: center;
    align-items: center;
-   height:35px;
    padding-left:15px;
    padding-right:15px;
    box-shadow:0 12px 24px rgba(3,3,3, 0.12);
+   width:100%;
 }
