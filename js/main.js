@@ -3,6 +3,7 @@
 const dataFilter = '[data-filter]';
 const filterClass = '.filter-link';
 const active = 'active';
+const siteHeader = document.querySelector('.site-header h4');
 
 /* card list */ 
 
@@ -21,9 +22,106 @@ for (const link of filterLinks) {
    });   
 }
 
-/* carousel */ 
+/* populate cards */ 
 
-// info-card-grid carousel-mode
+const pokeNames = [
+   'ditto',
+   'pikachu',
+   'charizard',
+   'muk',
+   'mewtwo',
+   'abra',
+   'alakazam',
+   'gardevoir',
+   'gyarados',
+   'articuno',
+   'magmar',
+   'blastoise',
+   'dugtrio',
+   'snorlax',
+   'shellder',
+   'klefki',
+   'bulbasaur',
+   'magnemite',
+   'arcanine',
+   'kabuto',
+   'lugia'
+];
+
+const fetchList = [];
+for (let i = 0; i < pokeNames.length; i++) {
+   const pokemon = fetch(`https://pokeapi.co/api/v2/pokemon/${pokeNames[i]}`);
+   fetchList.push(pokemon);
+}
+
+const pokeList = [];
+
+Promise.all(fetchList)
+   .then((response) => {
+      return Promise.all(response.map((res) => res.json()))
+   })
+   .then((data) => {
+      const newData = Array.from(data);
+      for (let i = 0; i < newData.length; i++) {
+         pokeList.push(newData[i]);
+      }
+   });
+
+
+const createCard = (array, index) => {
+   const pokemon = array[index];
+   const html =
+      `<div class="info-card" data-item="">
+         <div class="card-body">
+            <div class="card-title">
+               ${pokemon.name}
+            </div>
+            <div class="img-container">
+               <img src=${pokemon.sprites.front_default} alt="${pokemon.name} image">
+            </div>
+
+            <div class="stats-container">
+               <div class="type">
+                  Type: ${pokemon.types[0].type}
+               </div>
+
+               <div class="base-stats-container">
+                  <div class="hp">
+                     HP: <div>${pokemon.stats[0].base_stat}</div>
+                  </div>
+                  <div class="atk">
+                     Attack: <span>${pokemon.stats[1].base_stat}</span>
+                  </div>
+                  <div class="defense">
+                     Defense: <span>${pokemon.stats[2].base_stat}</span>
+                  </div>
+                  <div class="special-attack">
+                     Special-Attack: <span>${pokemon.stats[3].base_stat}</span>
+                  </div>
+                  <div class="special-defense">
+                     Special-Defense: <span>${pokemon.stats[4].base_stat}</span>
+                  </div>
+                  <div class="speed">
+                     Speed: <span>${pokemon.stats[5].base_stat}</span>
+                  </div>
+               </div>
+            </div>
+            <div class="card-tool-tip">
+               Click to add to favorites
+            </div>
+         </div>
+      </div>`;
+   
+   return html;
+};
+            
+for (let i = 0; i < pokeList.length; i++) {
+   const card = createCard(pokeList[i], i);
+   document.getElementById('collections').innerHTML += card;
+}
+siteHeader.innerText = `Select your favorites from below among\n ${pokeNames.length} pokemon!`;
+
+/* carousel */ 
 
 const carouselToggle = '[data-toggle]';
 const infoCard = '.info-card';
@@ -39,9 +137,11 @@ const changeMode = document.querySelector(cardContainer);
 toggleCarousel.addEventListener('click', function() {
    const array = Array.from(changeMode.classList);
    if (array.includes(carouselMode)) {
+      this.innerText = 'Change to Carousel Mode';  
       changeMode.classList.remove(carouselMode);
    } else {
-      changeMode.classList.add(carouselMode);  
+      this.innerText = 'Change to 2d Mode';
+      changeMode.classList.add(carouselMode);
    }
 });
 
