@@ -184,12 +184,12 @@
    opacity:1;
 }
 
-.info-card-grid.carousel-mode {
+.info-card-container.carousel-mode {
    height:495px;
    margin: 1rem 0 5rem;
 }
 
-.info-card-grid.carousel-mode .card-title {
+.info-card-grid .card-title {
    font-size:1.6rem;
 }
 
