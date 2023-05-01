@@ -1,6 +1,8 @@
 const sortDir = '[data-sortdir]';
 const siteHeader = document.querySelector('.site-header h4');
 const filterLinks = document.querySelectorAll(sortDir);
+const mainCollection = document.getElementById('collections');
+const favCollection = document.getElementById('favorites');
 
 /* populate cards */ 
 
@@ -35,6 +37,8 @@ for (let i = 0; i < pokeNames.length; i++) {
    const pokemon = fetch(`https://pokeapi.co/api/v2/pokemon/${pokeNames[i]}`);
    fetchList.push(pokemon);
 }
+
+siteHeader.innerText = `Select your favorites below\n from among ${pokeNames.length} pokemon!`;
 
 const pokeList = [];
 
@@ -85,15 +89,14 @@ const createCard = (array, index) => {
    return html;
 };
 
-siteHeader.innerText = `Select your favorites below\n from among ${pokeNames.length} pokemon!`;
-
 /* carousel */ 
+
 let slides, currentSlide, prevSlide, nextSlide;
 
 const appendCards = () => {
    for (let i = 0; i < pokeList.length; i++) {
       const card = createCard(pokeList, i);
-      document.getElementById('collections').innerHTML += card;
+      mainCollection.innerHTML += card;
    }
 };
 
@@ -127,17 +130,20 @@ const goToNext = () => (currentSlide < slides.length - 1) ? goToNum(currentSlide
 
 const goToNum = (val) => {
    currentSlide = val;
-   prevSlide = (currentSlide > 0) ? currentSlide - 1 : slides.length - 1;
-   nextSlide = (currentSlide < slides.length - 1) ? currentSlide + 1 : 0;
+   updatePrevSlide();
+   updateNextSlide();
    console.log('prev: ' + prevSlide, 'current:' + currentSlide, 'next:' + nextSlide);
    updateCarousel();
 };
 
-const updateCarousel = () => {
+const clearSlides = () => {
    for (const slide of slides) {
       slide.classList.remove('next', 'active', 'previous');
    }
-   
+}
+
+const updateCarousel = () => {
+   clearSlides();
    slides[prevSlide].classList.add('previous');
    slides[currentSlide].classList.add('active');
    slides[nextSlide].classList.add('next');
@@ -147,6 +153,13 @@ for (let i = 0; i < slideButtons.length; i++) {
    slideButtons[i].addEventListener('click', () => (i === 0) ? goToPrev() : goToNext());
 }
 
+const updateCollections = (id, direction) => {
+   const parent = (direction === 'toMain') ? mainCollection : favCollection;
+   const element = document.getElementById(id);
+   parent.append(element);
+   goToNext();
+   goToNext();
+};
 
 Promise.all(fetchList)
 .then((response) => {
@@ -166,10 +179,17 @@ Promise.all(fetchList)
       updatePrevSlide();
       updateNextSlide();
       updateCarousel();
+      slides.forEach((item) => {
+         item.addEventListener('click', function(){
+          const parentId = this.parentElement.id;
+          const dir = (parentId === 'collections') ? 'toFavs' : 'toMain';
+          const id = this.id;
+          updateCollections(id, dir);
+         });
+      });
    });
-
-   const sortData = (dir, id) => {
-      const container = document.getElementById(id);
+   
+   const sortData = (dir, container) => {
       const newArr = Array.from(slides);
       newArr.sort((a,b) => {
          if (dir === 'desc') {
@@ -180,10 +200,14 @@ Promise.all(fetchList)
       });
       newArr.forEach((card) => container.append(card));
    };
-
+   
    filterLinks.forEach((link) => {
       const sortDir = link.dataset.sortdir;
       link.addEventListener('click', function(){
-         sortData(sortDir, 'collections');
+         sortData(sortDir, mainCollection);
       });
    });
+
+   slides = document.querySelectorAll('.info-card');
+
+   
