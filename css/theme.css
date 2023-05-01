@@ -8,3 +8,8 @@
    --border:#383f53;
    --message-display:rgba(201, 8, 8, 0.8);
 }
+
+#favorites {
+   --message-display:rgba(8, 8, 201,0.8);
+   --color-text:#fff;
+}

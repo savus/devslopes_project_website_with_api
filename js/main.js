@@ -1,8 +1,11 @@
-const sortDir = '[data-sortdir]';
+const sortDir = '[data-filter]';
 const siteHeader = document.querySelector('.site-header h4');
 const filterLinks = document.querySelectorAll(sortDir);
 const mainCollection = document.getElementById('collections');
 const favCollection = document.getElementById('favorites');
+const toolTip = '.card-tool-tip';
+const mainCards = [];
+const favCards = [];
 
 /* populate cards */ 
 
@@ -33,6 +36,7 @@ const pokeNames = [
 pokeNames.sort();
 
 const fetchList = [];
+
 for (let i = 0; i < pokeNames.length; i++) {
    const pokemon = fetch(`https://pokeapi.co/api/v2/pokemon/${pokeNames[i]}`);
    fetchList.push(pokemon);
@@ -45,7 +49,7 @@ const pokeList = [];
 const createCard = (array, index) => {
    const pokemon = array[index];
    const html =
-      `<div id="${pokemon.name}" class="info-card">
+      `<div id="${pokemon.name}" class="info-card" data-item="main">
          <div class="card-body">
             <div class="card-title">
                ${pokemon.name.toUpperCase()}
@@ -107,6 +111,23 @@ const updateCollections = (id, direction) => {
    parent.append(element);
 };
 
+const sortData = (dir, collection) => {
+   const container = (collection === 'main') ? mainCollection : favCollection;
+   const newArr = Array.from(container.children);
+   newArr.sort((a,b) => {
+      if (dir === 'desc') {
+         if (a.id < b.id) return 1
+         else if (a.id > b.id) return -1
+         else return 0;
+      } else {
+         if (a.id > b.id) return 1 
+         else if (a.id < b.id) return -1 
+         else return 0;
+      }
+   });
+   newArr.forEach((card) => container.append(card));
+};
+
 Promise.all(fetchList)
 .then((response) => {
       return Promise.all(response.map((res) => res.json()))
@@ -126,30 +147,21 @@ Promise.all(fetchList)
           const parentId = this.parentElement.id;
           const dir = (parentId === 'collections') ? 'toFavs' : 'toMain';
           const id = this.id;
+          document.querySelector(`#${id} ${toolTip}`).innerText = 
+            (dir === 'toFavs') 
+            ? 'Click to remove from Favorites'
+            : 'Click to add to Favorites';
           updateCollections(id, dir);
          });
       });
    });
    
-   const sortData = (dir, container) => {
-      const newArr = Array.from(cards);
-      newArr.sort((a,b) => {
-         if (dir === 'desc') {
-            if (a.id < b.id) return 1
-            else if (a.id > b.id) return -1
-            else return 0;
-         }
-      });
-      newArr.forEach((card) => container.append(card));
-   };
-   
    filterLinks.forEach((link) => {
-      const sortDir = link.dataset.sortdir;
-      link.addEventListener('click', function(){
-         sortData(sortDir, mainCollection);
+      link.addEventListener('click', function() {
+         const dir = link.dataset.sortdir;
+         const filterGroup = link.dataset.filter;
+         sortData(dir, filterGroup);
       });
-   });
+   })
 
-   cards = document.querySelectorAll('.info-card');
-
-   
+   cards = document.querySelectorAll(infoCard);
