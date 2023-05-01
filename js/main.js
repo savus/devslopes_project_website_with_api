@@ -1,26 +1,6 @@
-
-
-const dataFilter = '[data-filter]';
-const filterClass = '.filter-link';
-const active = 'active';
+const sortDir = '[data-sortdir]';
 const siteHeader = document.querySelector('.site-header h4');
-
-/* card list */ 
-
-const filterLinks = document.querySelectorAll(dataFilter);
-
-const setActive = (elm, selector) => {
-   if (document.querySelector(`${selector}.${active}`) !== null) {
-      document.querySelector(`${selector}.${active}`).classList.remove(active);
-   }
-   elm.classList.add(active);
-};
-
-for (const link of filterLinks) {
-   link.addEventListener('click', function() {
-      setActive(link, filterClass);
-   });   
-}
+const filterLinks = document.querySelectorAll(sortDir);
 
 /* populate cards */ 
 
@@ -48,6 +28,8 @@ const pokeNames = [
    'lugia'
 ];
 
+pokeNames.sort();
+
 const fetchList = [];
 for (let i = 0; i < pokeNames.length; i++) {
    const pokemon = fetch(`https://pokeapi.co/api/v2/pokemon/${pokeNames[i]}`);
@@ -59,10 +41,10 @@ const pokeList = [];
 const createCard = (array, index) => {
    const pokemon = array[index];
    const html =
-      `<div class="info-card" data-item="">
+      `<div id="${pokemon.name}" class="info-card">
          <div class="card-body">
             <div class="card-title">
-               ${pokemon.name}
+               ${pokemon.name.toUpperCase()}
             </div>
             <div class="img-container">
                <img src=${pokemon.sprites.front_default} alt="${pokemon.name} image">
@@ -70,7 +52,7 @@ const createCard = (array, index) => {
 
             <div class="stats-container">
                <div class="type">
-                  Type: ${pokemon.types[0].type}
+                  Type: ${pokemon.types[0].type.name}
                </div>
 
                <div class="base-stats-container">
@@ -103,7 +85,7 @@ const createCard = (array, index) => {
    return html;
 };
 
-siteHeader.innerText = `Select your favorites from below among\n ${pokeNames.length} pokemon!`;
+siteHeader.innerText = `Select your favorites below\n from among ${pokeNames.length} pokemon!`;
 
 /* carousel */ 
 let slides, currentSlide, prevSlide, nextSlide;
@@ -118,26 +100,6 @@ const appendCards = () => {
 const updatePrevSlide = () => { prevSlide = (currentSlide > 0) ? currentSlide - 1 : slides.length - 1; };
 const updateNextSlide = () => { nextSlide = (currentSlide < slides.length - 1) ? currentSlide + 1 : 0; };
 
-Promise.all(fetchList)
-   .then((response) => {
-      return Promise.all(response.map((res) => res.json()))
-   })
-   .then((data) => {
-      const newData = Array.from(data);
-      for (let i = 0; i < newData.length; i++) {
-         pokeList.push(newData[i]);
-      }
-      return pokeList;
-   })
-   .then(() => { 
-      appendCards();
-      slides = document.querySelectorAll(infoCard);
-      currentSlide = Math.floor(Math.random() * slides.length);
-      updatePrevSlide();
-      updateNextSlide();
-      updateCarousel();
-
-   });
 
 const carouselToggle = '[data-toggle]';
 const infoCard = '.info-card';
@@ -175,7 +137,7 @@ const updateCarousel = () => {
    for (const slide of slides) {
       slide.classList.remove('next', 'active', 'previous');
    }
-
+   
    slides[prevSlide].classList.add('previous');
    slides[currentSlide].classList.add('active');
    slides[nextSlide].classList.add('next');
@@ -186,4 +148,42 @@ for (let i = 0; i < slideButtons.length; i++) {
 }
 
 
- 
+Promise.all(fetchList)
+.then((response) => {
+      return Promise.all(response.map((res) => res.json()))
+   })
+   .then((data) => {
+      const newData = Array.from(data);
+      for (let i = 0; i < newData.length; i++) {
+         pokeList.push(newData[i]);
+      }
+      return pokeList;
+   })
+   .then(() => { 
+      appendCards();
+      slides = document.querySelectorAll(infoCard);
+      currentSlide = Math.floor(Math.random() * slides.length);
+      updatePrevSlide();
+      updateNextSlide();
+      updateCarousel();
+   });
+
+   const sortData = (dir, id) => {
+      const container = document.getElementById(id);
+      const newArr = Array.from(slides);
+      newArr.sort((a,b) => {
+         if (dir === 'desc') {
+            if (a.id < b.id) return 1
+            else if (a.id > b.id) return -1
+            else return 0;
+         }
+      });
+      newArr.forEach((card) => container.append(card));
+   };
+
+   filterLinks.forEach((link) => {
+      const sortDir = link.dataset.sortdir;
+      link.addEventListener('click', function(){
+         sortData(sortDir, 'collections');
+      });
+   });

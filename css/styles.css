@@ -54,7 +54,12 @@
    justify-content:space-between;
 }
 
-.info-filter-nav .filter-link:hover {
+.info-filter-nav .filter {
+   padding: 0.5rem 1rem;
+   border-radius:5px;
+}
+
+.info-filter-nav .filter:hover {
    cursor:pointer;
    background-color:#f1f3f5;
 }
