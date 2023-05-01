@@ -89,9 +89,10 @@ const createCard = (array, index) => {
    return html;
 };
 
-/* carousel */ 
+let cards;
 
-let slides, currentSlide, prevSlide, nextSlide;
+const infoCard = '.info-card';
+const cardContainer = '.info-card-grid';
 
 const appendCards = () => {
    for (let i = 0; i < pokeList.length; i++) {
@@ -100,65 +101,10 @@ const appendCards = () => {
    }
 };
 
-const updatePrevSlide = () => { prevSlide = (currentSlide > 0) ? currentSlide - 1 : slides.length - 1; };
-const updateNextSlide = () => { nextSlide = (currentSlide < slides.length - 1) ? currentSlide + 1 : 0; };
-
-
-const carouselToggle = '[data-toggle]';
-const infoCard = '.info-card';
-const slideButton = '.slide-ctrl-container button';
-const cardContainer = '.info-card-grid';
-const carouselMode = 'carousel-mode';
-
-const slideButtons = document.querySelectorAll(slideButton);
-const toggleCarousel = document.querySelector(carouselToggle);
-const changeMode = document.querySelector(cardContainer);
-
-toggleCarousel.addEventListener('click', function() {
-   const array = Array.from(changeMode.classList);
-   if (array.includes(carouselMode)) {
-      this.innerText = 'Change to Carousel Mode';  
-      changeMode.classList.remove(carouselMode);
-   } else {
-      this.innerText = 'Change to 2d Mode';
-      changeMode.classList.add(carouselMode);
-   }
-});
-
-const goToPrev = () => (currentSlide > 0) ? goToNum(currentSlide - 1) : goToNum(slides.length - 1);
-const goToNext = () => (currentSlide < slides.length - 1) ? goToNum(currentSlide + 1) : goToNum(0);
-
-const goToNum = (val) => {
-   currentSlide = val;
-   updatePrevSlide();
-   updateNextSlide();
-   console.log('prev: ' + prevSlide, 'current:' + currentSlide, 'next:' + nextSlide);
-   updateCarousel();
-};
-
-const clearSlides = () => {
-   for (const slide of slides) {
-      slide.classList.remove('next', 'active', 'previous');
-   }
-}
-
-const updateCarousel = () => {
-   clearSlides();
-   slides[prevSlide].classList.add('previous');
-   slides[currentSlide].classList.add('active');
-   slides[nextSlide].classList.add('next');
-};
-
-for (let i = 0; i < slideButtons.length; i++) {
-   slideButtons[i].addEventListener('click', () => (i === 0) ? goToPrev() : goToNext());
-}
-
 const updateCollections = (id, direction) => {
    const parent = (direction === 'toMain') ? mainCollection : favCollection;
    const element = document.getElementById(id);
    parent.append(element);
-   goToNext();
-   goToNext();
 };
 
 Promise.all(fetchList)
@@ -174,12 +120,8 @@ Promise.all(fetchList)
    })
    .then(() => { 
       appendCards();
-      slides = document.querySelectorAll(infoCard);
-      currentSlide = Math.floor(Math.random() * slides.length);
-      updatePrevSlide();
-      updateNextSlide();
-      updateCarousel();
-      slides.forEach((item) => {
+      cards = document.querySelectorAll(infoCard);
+      cards.forEach((item) => {
          item.addEventListener('click', function(){
           const parentId = this.parentElement.id;
           const dir = (parentId === 'collections') ? 'toFavs' : 'toMain';
@@ -190,7 +132,7 @@ Promise.all(fetchList)
    });
    
    const sortData = (dir, container) => {
-      const newArr = Array.from(slides);
+      const newArr = Array.from(cards);
       newArr.sort((a,b) => {
          if (dir === 'desc') {
             if (a.id < b.id) return 1
@@ -208,6 +150,6 @@ Promise.all(fetchList)
       });
    });
 
-   slides = document.querySelectorAll('.info-card');
+   cards = document.querySelectorAll('.info-card');
 
    
