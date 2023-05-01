@@ -56,18 +56,6 @@ for (let i = 0; i < pokeNames.length; i++) {
 
 const pokeList = [];
 
-Promise.all(fetchList)
-   .then((response) => {
-      return Promise.all(response.map((res) => res.json()))
-   })
-   .then((data) => {
-      const newData = Array.from(data);
-      for (let i = 0; i < newData.length; i++) {
-         pokeList.push(newData[i]);
-      }
-   });
-
-
 const createCard = (array, index) => {
    const pokemon = array[index];
    const html =
@@ -114,14 +102,42 @@ const createCard = (array, index) => {
    
    return html;
 };
-            
-for (let i = 0; i < pokeList.length; i++) {
-   const card = createCard(pokeList[i], i);
-   document.getElementById('collections').innerHTML += card;
-}
+
 siteHeader.innerText = `Select your favorites from below among\n ${pokeNames.length} pokemon!`;
 
 /* carousel */ 
+let slides, currentSlide, prevSlide, nextSlide;
+
+const appendCards = () => {
+   for (let i = 0; i < pokeList.length; i++) {
+      const card = createCard(pokeList, i);
+      document.getElementById('collections').innerHTML += card;
+   }
+};
+
+const updatePrevSlide = () => { prevSlide = (currentSlide > 0) ? currentSlide - 1 : slides.length - 1; };
+const updateNextSlide = () => { nextSlide = (currentSlide < slides.length - 1) ? currentSlide + 1 : 0; };
+
+Promise.all(fetchList)
+   .then((response) => {
+      return Promise.all(response.map((res) => res.json()))
+   })
+   .then((data) => {
+      const newData = Array.from(data);
+      for (let i = 0; i < newData.length; i++) {
+         pokeList.push(newData[i]);
+      }
+      return pokeList;
+   })
+   .then(() => { 
+      appendCards();
+      slides = document.querySelectorAll(infoCard);
+      currentSlide = Math.floor(Math.random() * slides.length);
+      updatePrevSlide();
+      updateNextSlide();
+      updateCarousel();
+
+   });
 
 const carouselToggle = '[data-toggle]';
 const infoCard = '.info-card';
@@ -129,7 +145,6 @@ const slideButton = '.slide-ctrl-container button';
 const cardContainer = '.info-card-grid';
 const carouselMode = 'carousel-mode';
 
-const slides = document.querySelectorAll(infoCard);
 const slideButtons = document.querySelectorAll(slideButton);
 const toggleCarousel = document.querySelector(carouselToggle);
 const changeMode = document.querySelector(cardContainer);
@@ -144,10 +159,6 @@ toggleCarousel.addEventListener('click', function() {
       changeMode.classList.add(carouselMode);
    }
 });
-
-let currentSlide = Math.floor(Math.random() * slides.length);
-let prevSlide = (currentSlide > 0) ? currentSlide - 1 : slides.length - 1;
-let nextSlide = (currentSlide < slides.length - 1) ? currentSlide + 1 : 0;
 
 const goToPrev = () => (currentSlide > 0) ? goToNum(currentSlide - 1) : goToNum(slides.length - 1);
 const goToNext = () => (currentSlide < slides.length - 1) ? goToNum(currentSlide + 1) : goToNum(0);
@@ -174,4 +185,5 @@ for (let i = 0; i < slideButtons.length; i++) {
    slideButtons[i].addEventListener('click', () => (i === 0) ? goToPrev() : goToNext());
 }
 
-updateCarousel();
+
+ 
