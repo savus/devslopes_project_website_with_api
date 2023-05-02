@@ -1,14 +1,17 @@
 const sortDir = '[data-filter]';
-const siteHeader = document.querySelector('.site-header h4');
 const filterLinks = document.querySelectorAll(sortDir);
+
+const siteHeader = document.querySelector('.site-header h4');
+
 const mainCollection = document.getElementById('collections');
 const favCollection = document.getElementById('favorites');
+
 const toolTip = '.card-tool-tip';
+
 const mainCards = [];
 const favCards = [];
-
-/* populate cards */ 
-
+const typeSum = {};
+const typeList = document.getElementById('list-of-types');
 const pokeNames = [
    'ditto',
    'pikachu',
@@ -36,20 +39,27 @@ const pokeNames = [
 pokeNames.sort();
 
 const fetchList = [];
+const pokeList = [];
 
-for (let i = 0; i < pokeNames.length; i++) {
-   const pokemon = fetch(`https://pokeapi.co/api/v2/pokemon/${pokeNames[i]}`);
-   fetchList.push(pokemon);
-}
+let cards;
+const infoCard = '.info-card';
+const cardContainer = '.info-card-grid';
+
+const fetchData = (array) => {
+   for (let i = 0; i < pokeNames.length; i++) {
+      const pokemon = fetch(`https://pokeapi.co/api/v2/pokemon/${pokeNames[i]}`);
+      fetchList.push(pokemon);
+   }
+};
+
+fetchData(fetchList);
 
 siteHeader.innerText = `Select your favorites below\n from among ${pokeNames.length} pokemon!`;
-
-const pokeList = [];
 
 const createCard = (array, index) => {
    const pokemon = array[index];
    const html =
-      `<div id="${pokemon.name}" class="info-card" data-item="main">
+      `<div id="${pokemon.name}" class="info-card">
          <div class="card-body">
             <div class="card-title">
                ${pokemon.name.toUpperCase()}
@@ -93,27 +103,21 @@ const createCard = (array, index) => {
    return html;
 };
 
-let cards;
-
-const infoCard = '.info-card';
-const cardContainer = '.info-card-grid';
-
-const appendCards = () => {
-   for (let i = 0; i < pokeList.length; i++) {
-      const card = createCard(pokeList, i);
-      mainCollection.innerHTML += card;
+const appendCards = (dataList, collection) => {
+   for (let i = 0; i < dataList.length; i++) {
+      const card = createCard(dataList, i);
+      collection.innerHTML += card;
    }
 };
 
-const updateCollections = (id, direction) => {
-   const parent = (direction === 'toMain') ? mainCollection : favCollection;
+const updateCollections = (id, collection) => {
+   const parent = (collection === mainCollection) ? favCollection : mainCollection;
    const element = document.getElementById(id);
    parent.append(element);
 };
 
-const sortData = (dir, collection) => {
-   const container = (collection === 'main') ? mainCollection : favCollection;
-   const newArr = Array.from(container.children);
+const sortData = (dir, collection = mainCollection) => {
+   const newArr = Array.from(collection.children);
    newArr.sort((a,b) => {
       if (dir === 'desc') {
          if (a.id < b.id) return 1
@@ -125,7 +129,25 @@ const sortData = (dir, collection) => {
          else return 0;
       }
    });
-   newArr.forEach((card) => container.append(card));
+   newArr.forEach((card) => collection.append(card));
+};
+
+const calculateTypes = (obj) => {
+   for (const [key,value] of Object.entries(obj)) {
+      let element = `<li id="${key}">${key} : ${value}</li>`;
+      typeList.innerHTML += element;
+   }
+};
+
+function moveCard(e) {
+   const card = e.target;
+   const parent = card.parentElement;
+   const id = card.id;
+   document.querySelector(`#${id} ${toolTip}`).innerText = 
+      (parent === favCollection)
+      ? 'Click to remove from Favorites'
+      : 'Click to add to Favorites';
+   updateCollections(id, parent);
 };
 
 Promise.all(fetchList)
@@ -136,32 +158,22 @@ Promise.all(fetchList)
       const newData = Array.from(data);
       for (let i = 0; i < newData.length; i++) {
          pokeList.push(newData[i]);
+         typeSum[newData[i].types[0].type.name] = typeSum[newData[i].types[0].type.name] + 1 || 1;
       }
       return pokeList;
    })
    .then(() => { 
-      appendCards();
-      cards = document.querySelectorAll(infoCard);
-      cards.forEach((item) => {
-         item.addEventListener('click', function(){
-          const parentId = this.parentElement.id;
-          const dir = (parentId === 'collections') ? 'toFavs' : 'toMain';
-          const id = this.id;
-          document.querySelector(`#${id} ${toolTip}`).innerText = 
-            (dir === 'toFavs') 
-            ? 'Click to remove from Favorites'
-            : 'Click to add to Favorites';
-          updateCollections(id, dir);
-         });
-      });
+      calculateTypes(typeSum);
+      appendCards(pokeList, mainCollection);
+      cards = document.querySelectorAll(cardContainer);
+      cards.forEach((container) => container.addEventListener('click', moveCard));
    });
    
    filterLinks.forEach((link) => {
       link.addEventListener('click', function() {
          const dir = link.dataset.sortdir;
-         const filterGroup = link.dataset.filter;
+         const filterGroup = document.getElementById(link.dataset.filter);
          sortData(dir, filterGroup);
       });
-   })
+   });
 
-   cards = document.querySelectorAll(infoCard);
