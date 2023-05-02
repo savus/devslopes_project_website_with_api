@@ -144,7 +144,7 @@ function moveCard(e) {
    const parent = card.parentElement;
    const id = card.id;
    document.querySelector(`#${id} ${toolTip}`).innerText = 
-      (parent === favCollection)
+      (parent === mainCollection)
       ? 'Click to remove from Favorites'
       : 'Click to add to Favorites';
    updateCollections(id, parent);
