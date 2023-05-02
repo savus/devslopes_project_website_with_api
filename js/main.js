@@ -3,15 +3,17 @@ const filterLinks = document.querySelectorAll(sortDir);
 
 const siteHeader = document.querySelector('.site-header h4');
 
-const mainCollection = document.getElementById('collections');
-const favCollection = document.getElementById('favorites');
-
-const toolTip = '.card-tool-tip';
+const mainId = 'collections';
+const favId = 'favorites';
+const mainCollection = document.getElementById(mainId);
+const favCollection = document.getElementById(favId);
 
 const mainCards = [];
 const favCards = [];
 const typeSum = {};
-const typeList = document.getElementById('list-of-types');
+const typeId = 'list-of-types';
+const typeList = document.getElementById(typeId);
+const toolTip = '.card-tool-tip';
 const pokeNames = [
    'ditto',
    'pikachu',
@@ -41,18 +43,18 @@ pokeNames.sort();
 const fetchList = [];
 const pokeList = [];
 
-let cards;
 const infoCard = '.info-card';
 const cardContainer = '.info-card-grid';
+let cards = document.querySelectorAll(cardContainer);
 
-const fetchData = (array) => {
-   for (let i = 0; i < pokeNames.length; i++) {
-      const pokemon = fetch(`https://pokeapi.co/api/v2/pokemon/${pokeNames[i]}`);
-      fetchList.push(pokemon);
+const fetchData = (fetches, names) => {
+   for (let i = 0; i < names.length; i++) {
+      const pokemon = fetch(`https://pokeapi.co/api/v2/pokemon/${names[i]}`);
+      fetches.push(pokemon);
    }
 };
 
-fetchData(fetchList);
+fetchData(fetchList, pokeNames);
 
 siteHeader.innerText = `Select your favorites below\n from among ${pokeNames.length} pokemon!`;
 
@@ -151,7 +153,7 @@ function moveCard(e) {
 };
 
 Promise.all(fetchList)
-.then((response) => {
+   .then((response) => {
       return Promise.all(response.map((res) => res.json()))
    })
    .then((data) => {
@@ -165,7 +167,6 @@ Promise.all(fetchList)
    .then(() => { 
       calculateTypes(typeSum);
       appendCards(pokeList, mainCollection);
-      cards = document.querySelectorAll(cardContainer);
       cards.forEach((container) => container.addEventListener('click', moveCard));
    });
    
