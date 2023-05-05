@@ -25,47 +25,45 @@
       <!--[if lt IE 7]>
          <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
       <![endif]-->
-      <main class="site-wrapper container">
-
+      <main>
          <header class="site-header">
-            <h1>Pokemon Info Finder</h1>
-            <h4></h4>
+            <nav class="navbar">
+               <h1>Pokemon Info Finder</h1>
+               <label for="search" class="search-container">
+                  <input autocomplete="off" id="search" type="text" placeholder="Type in pokemon name...">
+                  <i class="fas fa-search"></i>
+               </label>
+               <h3 class="types">
+                  List of Types
+                  <i class="fa-solid fa-chevron-down"></i>
+                  <div class="type-container">
+                     <ul class="list-of-types">
+                        
+                     </ul>
+                  </div>
+               </h3>
+               <h3 class="favorites-btn" data-open="favorites">Go to favorites</h3>
+            </nav>
          </header>
-         
-         <section class="info-section container">
-            <div class="filter-container">
-               <h2 id="main-jump">Main Collection</h2>
-               <div>List of Types</div>
-               <ul id="list-of-types" class="ul-defaults-none"></ul>
-               <div class="jump-link">
-                  <a href="#favorites-jump">>>Go to favorites.<<</a>
-               </div>
-               <ul class="info-filter-nav ul-defaults-none">
-                  <li data-sortdir="asc" data-filter="collections" class="sort-btn filter">Sort [A-Z]</li>
-                  <li data-sortdir="desc" data-filter="collections" class="filter-btn filter">Sort [Z-A]</li>
-               </ul>
+         <section id="main">
+            <div class="filter-btns">
+               <button href="#" class="neon-button" data-filter="main" data-sortdir="asc">Sort A-Z</button>
+               <button href="#" class="neon-button" data-filter="main" data-sortdir="desc">Sort Z-A</button>
             </div>
-            <div class="info-card-container container">
-               <div id="collections" class="info-card-grid"></div>
-            </div>
+            <div id="main-collection" class="collection-grid"></div>
          </section>
-         <section class="info-section container">
-            <div class="filter-container">
-               <h2 id="favorites-jump">Favorites</h2>
-               <div class="jump-link">
-                  <a href="#main-jump">>>Go to main collection.<<</a>
-               </div>
-               <ul class="info-filter-nav ul-defaults-none">
-                  <li data-sortdir="asc" data-filter="favorites" class="sort-btn filter">Sort [A-Z]</li>
-                  <li data-sortdir="desc" data-filter="favorites" class="filter-btn filter">Sort [Z-A]</li>
-               </ul>
-            </div>
-            <div class="info-card-container container">
-               <div id="favorites" class="info-card-grid"></div>
-            </div>
-         </section>
-
       </main>
+      <section id="favorites" class="full-site-modal" data-animation="zoomInOut">
+         <header class="modal-header">
+            <h3>Favorites</h3>
+            <i class="fas fa-times" data-close="favorites"></i>
+         </header>
+         <div class="filter-btns">
+            <button href="#" class="neon-button" data-filter="favorite" data-sortdir="asc">Sort A-Z</button>
+            <button href="#" class="neon-button" data-filter="favorite" data-sortdir="desc">Sort Z-A</button>
+         </div>
+         <div id="favorites-collection" class="collection-grid"></div>
+      </section>
       <script src="js/main.js" async defer></script>
    </body>
 </html>

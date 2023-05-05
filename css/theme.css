@@ -1,15 +1,16 @@
 :root {
-   --bg:#fff;
-   --bg-panel:#fff;
-   --color-headings:#161c2d;
-   --color-text-opacity:rgba(22,28,45,0.7);
+   --bg: #000;
+   --bg-contrast:#fff;
    --color-text:#161c2d;
-   --color-text-base:#161c2d;
-   --border:#383f53;
-   --message-display:rgba(201, 8, 8, 0.8);
+   --color-headings:#fff;
+   --color-neon-filter:hsl(186,100%,57%);
+   --color-neon-bg:hsl(0,0,0);
+   --tool-tip-bg:hsl(0, 100%, 38%);
+   --tool-tip-text:#000;
+   --list-height:0px;
 }
 
-#favorites {
-   --message-display:rgba(8, 8, 201,0.8);
-   --color-text:#fff;
+#favorites-collection {
+   --tool-tip-bg: hsl(228, 94%, 47%);
+   --tool-tip-text:#fff;
 }

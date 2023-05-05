@@ -1,116 +1,103 @@
-const sortDir = '[data-filter]';
-const filterLinks = document.querySelectorAll(sortDir);
-
-const siteHeader = document.querySelector('.site-header h4');
-
-const mainId = 'collections';
-const favId = 'favorites';
-const mainCollection = document.getElementById(mainId);
-const favCollection = document.getElementById(favId);
-
-const mainCards = [];
-const favCards = [];
-const typeSum = {};
-const typeId = 'list-of-types';
-const typeList = document.getElementById(typeId);
+const modalOpen = '[data-open]';
+const modalClose = '[data-close]';
+const isVisible = 'is-visible';
+const open = 'open';
+const typeTab = '.types'
+const typeList = 'type-list';
+const neonButton = '.neon-button';
+const filterLink = '[data-filter]';
+const active = 'active';
 const toolTip = '.card-tool-tip';
-const pokeNames = [
+
+const root = document.documentElement;
+
+const apiNames = [
    'ditto',
    'pikachu',
-   'charizard',
-   'muk',
    'mewtwo',
-   'abra',
-   'alakazam',
-   'gardevoir',
-   'gyarados',
-   'articuno',
-   'magmar',
-   'blastoise',
-   'dugtrio',
-   'snorlax',
-   'shellder',
-   'klefki',
    'bulbasaur',
-   'magnemite',
-   'arcanine',
+   'charizard',
+   'charmander',
+   'gastly',
+   'haunter',
+   'abra',
+   'kadabra',
+   'alakazam',
+   'staryu',
+   'starmie',
+   'mew',
+   'gardevoir',
+   'klefki',
+   'articuno',
+   'venusaur',
+   'gyarados',
    'kabuto',
-   'lugia'
+   'snorlax',
+   'muk',
+   'grimer',
+   'arbok',
+   'ninjask'
 ];
 
-pokeNames.sort();
+const apiFetches = [];
+const jsonList = [];
+const sumOfTypes = {};
+const typeHeight = 42.3;
+const listHeight = '--list-height';
+const mainId = 'main-collection';
+const favId = 'favorites-collection';
+const mainCollection = document.getElementById(mainId);
+const favCollection = document.getElementById(favId);
+const mainCards = [];
+const favCards = [];
 
-const fetchList = [];
-const pokeList = [];
+/*modals*/
 
-const infoCard = '.info-card';
-const cardContainer = '.info-card-grid';
-let cards = document.querySelectorAll(cardContainer);
+const openModals = document.querySelectorAll(modalOpen);
+const closeModals = document.querySelectorAll(modalClose);
 
-const fetchData = (fetches, names) => {
-   for (let i = 0; i < names.length; i++) {
-      const pokemon = fetch(`https://pokeapi.co/api/v2/pokemon/${names[i]}`);
-      fetches.push(pokemon);
+for (const elm of openModals) {
+   elm.addEventListener('click', function(){
+      const modalId = this.dataset.open;
+      document.getElementById(modalId).classList.add(isVisible);
+   });
+}
+
+for (const elm of closeModals) {
+   elm.addEventListener('click', function(){
+      const modalId = this.dataset.close;
+      document.getElementById(modalId).classList.remove(isVisible);
+   });
+}
+
+/*elemental types list*/
+const toggleTypes = document.querySelector(typeTab).addEventListener('click', function(){
+   if (!this.className.includes(open)) {
+      this.classList.add(open);
+   } else {
+      this.classList.remove(open);
    }
-};
+});
 
-fetchData(fetchList, pokeNames);
-
-siteHeader.innerText = `Select your favorites below\n from among ${pokeNames.length} pokemon!`;
-
-const createCard = (array, index) => {
-   const pokemon = array[index];
-   const html =
-      `<div id="${pokemon.name}" class="info-card">
-         <div class="card-body">
-            <div class="card-title">
-               ${pokemon.name.toUpperCase()}
-            </div>
-            <div class="img-container">
-               <img src=${pokemon.sprites.front_default} alt="${pokemon.name} image">
-            </div>
-
-            <div class="stats-container">
-               <div class="type">
-                  Type: ${pokemon.types[0].type.name}
-               </div>
-
-               <div class="base-stats-container">
-                  <div class="hp">
-                     HP: <div>${pokemon.stats[0].base_stat}</div>
-                  </div>
-                  <div class="atk">
-                     Attack: <span>${pokemon.stats[1].base_stat}</span>
-                  </div>
-                  <div class="defense">
-                     Defense: <span>${pokemon.stats[2].base_stat}</span>
-                  </div>
-                  <div class="special-attack">
-                     Special-Attack: <span>${pokemon.stats[3].base_stat}</span>
-                  </div>
-                  <div class="special-defense">
-                     Special-Defense: <span>${pokemon.stats[4].base_stat}</span>
-                  </div>
-                  <div class="speed">
-                     Speed: <span>${pokemon.stats[5].base_stat}</span>
-                  </div>
-               </div>
-            </div>
-            <div class="card-tool-tip">
-               Click to add to favorites
-            </div>
-         </div>
-      </div>`;
-   
-   return html;
-};
-
-const appendCards = (dataList, collection) => {
-   for (let i = 0; i < dataList.length; i++) {
-      const card = createCard(dataList, i);
-      collection.innerHTML += card;
+const setActive = (elm, selector) => {
+   if (document.querySelector(`${selector}.${active}`) !== null) {
+      document.querySelector(`${selector}.${active}`).classList.remove(active);
    }
+   elm.classList.add(active);
 };
+
+const searchBox = document.getElementById('search');
+
+searchBox.addEventListener('keyup', (e) => {
+   const searchInput = e.target.value.toLowerCase().trim();
+   document.querySelectorAll('.card').forEach((card) => {
+      if (card.dataset.sort.includes(searchInput)) {
+         card.style.display = 'block';
+      } else {
+         card.style.display = 'none';
+      }
+   });
+});
 
 const updateCollections = (id, collection) => {
    const parent = (collection === mainCollection) ? favCollection : mainCollection;
@@ -118,7 +105,7 @@ const updateCollections = (id, collection) => {
    parent.append(element);
 };
 
-const sortData = (dir, collection = mainCollection) => {
+const sortData = (dir, collection) => {
    const newArr = Array.from(collection.children);
    newArr.sort((a,b) => {
       if (dir === 'desc') {
@@ -134,11 +121,82 @@ const sortData = (dir, collection = mainCollection) => {
    newArr.forEach((card) => collection.append(card));
 };
 
-const calculateTypes = (obj) => {
-   for (const [key,value] of Object.entries(obj)) {
-      let element = `<li id="${key}">${key} : ${value}</li>`;
-      typeList.innerHTML += element;
+const filterLinks = document.querySelectorAll(filterLink);
+
+for (const link of filterLinks) {
+   link.addEventListener('click', function(){
+      const sortDir = this.dataset.sortdir;
+      const collection = (this.dataset.filter === 'main') ? mainCollection : favCollection;
+      setActive(link, neonButton);
+      sortData(sortDir, collection);
+   });   
+}
+
+/* API */
+
+apiNames.sort();
+
+const fetchData = (array) => {
+   for (const name of array) {
+      const pokemon = fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+      apiFetches.push(pokemon);
    }
+};
+
+fetchData(apiNames);
+
+const createCard = (obj) => {
+   const html = 
+   `<div id = "${obj.name}" data-sort="${obj.name}" class="card">
+      <div class="card-body">
+         <div class="card-name">${obj.name.toUpperCase()}</div>
+         <div class="img-wrapper">
+            <img src="${obj.sprites.front_default}" alt="${obj.name} image">
+         </div>
+         <div class="stats-container">
+            <div class="elemental-type">
+               Type <span>${obj.types[0].type.name}</span>
+            </div>
+            <div class="hp">
+               HP: <span>${obj.stats[0].base_stat}</span>
+            </div>
+            <div class="attack">
+               Attack: <span>${obj.stats[1].base_stat}</span>
+            </div>
+            <div class="defense">
+               Defense: <span>${obj.stats[2].base_stat}</span>
+            </div>
+            <div class="special-attack">
+               Special-Attack: <span>${obj.stats[3].base_stat}</span>
+            </div>
+            <div class="special-defense">
+               Special-Defense: <span>${obj.stats[4].base_stat}</span>
+            </div>
+            <div class="speed">
+               Speed: <span>${obj.stats[5].base_stat}</span>
+            </div>
+         </div>
+      </div>
+      <div class="card-tool-tip">Click to add to favorites.</div>
+   </div>`;
+
+   return html;
+};
+
+const initializeCards = (arr) => {
+   for (let i = 0; i < arr.length; i++) {
+      const card = createCard(arr[i], i);
+      mainCollection.innerHTML += card;
+   }
+};
+
+const addElementalTypes = (obj) => {
+   const listContainer = document.querySelector('.list-of-types');
+   for (const [key, value] of Object.entries(obj)) {
+      const listItem = `<li id="${key}">${key} : ${value}</li>`;
+      listContainer.innerHTML += listItem;
+   }
+   root.style.setProperty(listHeight, `${listContainer.children.length * typeHeight}px`);
 };
 
 function moveCard(e) {
@@ -150,31 +208,23 @@ function moveCard(e) {
       ? 'Click to remove from Favorites'
       : 'Click to add to Favorites';
    updateCollections(id, parent);
-};
+}
 
-Promise.all(fetchList)
+Promise.all(apiFetches)
    .then((response) => {
-      return Promise.all(response.map((res) => res.json()))
+      return Promise.all(response.map((res) => res.json()));
    })
    .then((data) => {
-      const newData = Array.from(data);
-      for (let i = 0; i < newData.length; i++) {
-         pokeList.push(newData[i]);
-         typeSum[newData[i].types[0].type.name] = typeSum[newData[i].types[0].type.name] + 1 || 1;
-      }
-      return pokeList;
-   })
-   .then(() => { 
-      calculateTypes(typeSum);
-      appendCards(pokeList, mainCollection);
-      cards.forEach((container) => container.addEventListener('click', moveCard));
-   });
-   
-   filterLinks.forEach((link) => {
-      link.addEventListener('click', function() {
-         const dir = link.dataset.sortdir;
-         const filterGroup = document.getElementById(link.dataset.filter);
-         sortData(dir, filterGroup);
+      const newArr = Array.from(data);
+      newArr.forEach((obj) => {
+         jsonList.push(obj);
+         sumOfTypes[obj.types[0].type.name] = sumOfTypes[obj.types[0].type.name] + 1 || 1;
       });
+      return jsonList;
+   })
+   .then((arr) => {
+      initializeCards(arr);
+      addElementalTypes(sumOfTypes);
+      const collections = document.querySelectorAll('.collection-grid');
+      collections.forEach((collection) => collection.addEventListener('click', moveCard));
    });
-
