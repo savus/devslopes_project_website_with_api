@@ -81,38 +81,38 @@ header {
 .list-of-types { font-size:1.3rem; }
 
 .list-of-types li {
-   background-color:rgb(255, 255, 255);
+   color:#fff;
    padding:0.3rem 0.8rem;
    border:1px solid rgb(89, 88, 88);
 }
 
-#psychic { color:hsl(296, 91%, 45%); }
+#psychic { background-color:hsl(296, 91%, 45%); }
 
-#fire { color:hsl(0, 96%, 36%); }
+#fire { background-color:hsl(0, 96%, 36%); }
 
-#ice { color:hsl(193, 100%, 78%); }
+#ice { background-color:hsl(193, 100%, 78%); }
 
- #water { color:hsl(238, 100%, 37%); }
+ #water { background-color:hsl(238, 100%, 37%); }
 
-#grass { color:hsl(116, 94%, 34%); }
+#grass { background-color:hsl(116, 94%, 34%); }
 
-#normal { color:rgb(105, 105, 105); }
+#normal { background-color:rgb(105, 105, 105); }
 
-#ground { color:hsl(39, 100%, 20%); }
+#ground { background-color:hsl(39, 100%, 20%); }
 
-#steel { color:hsl(0, 3%, 94%); }
+#steel { background-color:hsl(0, 3%, 94%); }
 
-#electric { color:hsl(55, 100%, 49%); }
+#electric { background-color:hsl(55, 100%, 49%); }
 
-#poison { color:hsl(297, 92%, 10%); }
+#poison { background-color:hsl(297, 92%, 10%); }
 
-#ghost { color:hsl(297, 70%, 77%); }
+#ghost { background-color:hsl(297, 70%, 77%); }
 
-#rock { color:hsl(261, 81%, 25%); }
+#rock { background-color:hsl(261, 81%, 25%); }
 
-#steel { color:hsl(198, 23%, 37%); }
+#steel { background-color:hsl(198, 23%, 37%); }
 
-#bug { color:hsl(137, 96%, 9%); }
+#bug { background-color:hsl(137, 96%, 9%); }
 
 #psychic,
 #fire,
@@ -124,7 +124,7 @@ header {
 #steel,
 #electric,
 #poison {
-   text-shadow: 0 0 0.125em hsla(0, 1%, 85%, 0.3);
+   text-shadow: 0 0 0.125em hsla(0, 0%, 0%, 0.6);
 }
 
 .favorites-btn:hover { background-color:red; }
