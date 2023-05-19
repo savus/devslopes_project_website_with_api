@@ -39,7 +39,6 @@ const apiNames = [
    'ninjask'
 ];
 
-const apiFetches = [];
 const jsonList = [];
 const sumOfTypes = {};
 const typeHeight = 42.3;
@@ -108,16 +107,11 @@ const updateCollections = (id, collection) => {
 const sortData = (dir, collection) => {
    const newArr = Array.from(collection.children);
    newArr.sort((a,b) => {
-      if (dir === 'desc') {
-         if (a.id < b.id) return 1
-         else if (a.id > b.id) return -1
-         else return 0;
-      } else {
-         if (a.id > b.id) return 1 
-         else if (a.id < b.id) return -1 
-         else return 0;
-      }
+      if (a.id < b.id) return dir === 'desc' ? 1 : -1
+      else if (a.id > b.id) return dir === 'desc' ? -1 : 1
+      else return 0;
    });
+
    newArr.forEach((card) => collection.append(card));
 };
 
@@ -137,13 +131,8 @@ for (const link of filterLinks) {
 apiNames.sort();
 
 const fetchData = (array) => {
-   for (const name of array) {
-      const pokemon = fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
-      apiFetches.push(pokemon);
-   }
+   return array.map((item) => fetch(`https://pokeapi.co/api/v2/pokemon/${item}`));
 };
-
-fetchData(apiNames);
 
 const createCard = (obj) => {
    const html = 
@@ -210,7 +199,8 @@ function moveCard(e) {
    updateCollections(id, parent);
 }
 
-Promise.all(apiFetches)
+Promise
+   .all(fetchData(apiNames))
    .then((response) => {
       return Promise.all(response.map((res) => res.json()));
    })
